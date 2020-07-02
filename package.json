@@ -57,5 +57,11 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@storybook/addon-actions": "^5.3.19",
+    "@storybook/addon-viewport": "^5.3.19",
+    "@storybook/react": "^5.3.19",
+    "storybook-addon-props": "^3.0.4"
   }
 }

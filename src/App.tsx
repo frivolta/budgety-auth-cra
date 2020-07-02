@@ -6,10 +6,14 @@ import { client } from './config/apolloClient'
 
 // React Router
 import { Route, BrowserRouter as Router, Switch } from 'react-router-dom'
+import PrivateRoute from './components/PrivateRoute/PrivateRoute'
 
 // Pages
 import ErrorPage from './pages/ErrorPage'
 import IndexPage from './pages/IndexPage'
+import SignupPage from './pages/SignupPage'
+import SigninPage from './pages/SigninPage'
+import DashboardPage from './pages/DashboardPage'
 
 // Toastify__toast-container
 import { ToastContainer, toast } from 'react-toastify'
@@ -48,6 +52,9 @@ const App: React.SFC = () => {
         <Router>
           <Switch>
             <Route exact path="/" component={IndexPage} />
+            <Route exact path="/signup" component={SignupPage} />
+            <Route exact path="/signin" component={SigninPage} />
+            <PrivateRoute exact path="/dashboard" component={DashboardPage} />
             <Route component={ErrorPage} />
           </Switch>
         </Router>
