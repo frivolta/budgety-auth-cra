@@ -62,6 +62,7 @@ export const LOGIN = gql`
 const SigninPage: React.FC = () => {
   const useAuthValues: any = useAuth()
   const [signin, { loading, error }] = useMutation(LOGIN)
+  const isLoggedIn = useAuthValues && useAuthValues.authTokens
   let history = useHistory()
 
   React.useEffect(() => {
@@ -69,7 +70,7 @@ const SigninPage: React.FC = () => {
     if (useAuthValues && useAuthValues.authTokens) {
       history.push('/dashboard')
     }
-  }, [useAuthValues && useAuthValues.authTokens])
+  }, [isLoggedIn, history, useAuthValues])
 
   const formik = useFormik({
     initialValues: {

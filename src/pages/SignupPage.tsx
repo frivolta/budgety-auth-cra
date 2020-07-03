@@ -65,7 +65,7 @@ const SignupPage: React.FC = () => {
     if (useAuthValues.authTokens) {
       history.push('/dashboard')
     }
-  }, [useAuthValues.authTokens])
+  }, [useAuthValues.authTokens, history])
 
   const formik = useFormik({
     initialValues: {
