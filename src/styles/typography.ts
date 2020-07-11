@@ -52,7 +52,3 @@ export const Span = styled.span<TypographyProps>`
   color: ${(props) => (props.color ? props.color : theme.colors.primaryColor)};
   size: ${(props) => (props.size ? props.size : theme.fontSizes.base)};
 `
-
-export const Small = styled.small`
-  font-size: 80%;
-`

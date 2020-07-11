@@ -3,6 +3,9 @@ import styled from 'styled-components'
 import Theme from '../../styles/Theme'
 import { device } from '../../styles/config'
 
+// Icons
+import addIcon from '../../assets/images/icons/add.svg'
+
 interface DashboardSidenavContainerProps {
   isActive: boolean
 }
@@ -18,7 +21,7 @@ export const Grid = styled.div`
     grid-template-columns: 1fr;
     min-height: 100vh;
     height: auto;
-    grid-template-areas: 'header' 'main' 'footer';
+    grid-template-areas: 'main' 'main' 'footer';
   }
 `
 export const DashboardMainContainer = styled.div`
@@ -27,8 +30,8 @@ export const DashboardMainContainer = styled.div`
 `
 
 export const DashboardHeaderContainer = styled.div`
-  grid-area: header;
   display: flex;
+  grid-area: header;
   align-items: center;
   flex-direction: row;
   align-items: center;
@@ -37,9 +40,28 @@ export const DashboardHeaderContainer = styled.div`
   box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
   z-index: 2;
   @media ${device.tabletMax} {
+    display: none;
     position: fixed;
     width: 100%;
     height: 72px;
+  }
+`
+export const DashboardMobileNavigation = styled.div`
+  grid-area: footer;
+  align-items: center;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  display: none;
+  @media ${device.tabletMax} {
+    background: ${(props) => props.theme.colors.lightPrimary};
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+    z-index: 2;
+    display: flex;
+    position: fixed;
+    width: 100%;
+    height: 72px;
+    bottom: 0;
   }
 `
 export const DashboardHeaderLeft = styled.div`
@@ -106,10 +128,11 @@ const Dashboard: React.FC = () => {
     <Theme>
       <Grid>
         <DashboardHeaderContainer />
-        <DashboardSidenavContainer isActive />
+        <DashboardSidenavContainer isActive={false} />
         <DashboardMainContainer />
-        Dashboard
-        <DashboardFooterContainer />
+        <DashboardMobileNavigation>
+          <img src={addIcon} alt="reports" />
+        </DashboardMobileNavigation>
       </Grid>
     </Theme>
   )
