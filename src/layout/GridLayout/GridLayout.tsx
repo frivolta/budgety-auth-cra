@@ -2,12 +2,23 @@ import React from 'react'
 import styled from 'styled-components'
 import Theme from '../../styles/Theme'
 import { device } from '../../styles/config'
-
 // Icons
 import addIcon from '../../assets/images/icons/add.svg'
+import expensesIcon from '../../assets/images/icons/expenses.svg'
+import userIcon from '../../assets/images/icons/user.svg'
+import reportIcon from '../../assets/images/icons/report.svg'
+import Icon from '../../components/Icon/Icon'
+
+import Header from '../../components/Header/Header'
+
+import { useHistory } from 'react-router-dom'
 
 interface DashboardSidenavContainerProps {
   isActive: boolean
+}
+
+export interface DashboardProps {
+  title: string
 }
 
 export const Grid = styled.div`
@@ -21,7 +32,7 @@ export const Grid = styled.div`
     grid-template-columns: 1fr;
     min-height: 100vh;
     height: auto;
-    grid-template-areas: 'main' 'main' 'footer';
+    grid-template-areas: 'header' 'main' 'footer';
   }
 `
 export const DashboardMainContainer = styled.div`
@@ -40,10 +51,12 @@ export const DashboardHeaderContainer = styled.div`
   box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
   z-index: 2;
   @media ${device.tabletMax} {
-    display: none;
     position: fixed;
     width: 100%;
     height: 72px;
+    padding: 0 32px;
+    background: ${(props) => props.theme.colors.lightSecondary};
+    box-shadow: none;
   }
 `
 export const DashboardMobileNavigation = styled.div`
@@ -53,6 +66,7 @@ export const DashboardMobileNavigation = styled.div`
   align-items: center;
   justify-content: space-between;
   display: none;
+  padding: 0 36px;
   @media ${device.tabletMax} {
     background: ${(props) => props.theme.colors.lightPrimary};
     box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
@@ -63,16 +77,6 @@ export const DashboardMobileNavigation = styled.div`
     height: 72px;
     bottom: 0;
   }
-`
-export const DashboardHeaderLeft = styled.div`
-  display: flex;
-  flex-direction: row;
-  margin-left: ${(props) => parseInt(props.theme.fontSizes.base) * 2};
-`
-export const DashboardHeaderRight = styled.div`
-  display: flex;
-  align-items: center;
-  margin-right: ${(props) => parseInt(props.theme.fontSizes.base) * 2};
 `
 
 export const DashboardFooterContainer = styled.div`
@@ -123,15 +127,68 @@ export const DashboardSidenavHr = styled.hr`
   margin-right: 32px;
 `
 
-const Dashboard: React.FC = () => {
+// Test
+// - Title is present
+// - Links are working
+// - Page is settings, icon is disabled
+
+const Dashboard: React.FC<DashboardProps> = (props) => {
+  const [isSettingsPage, setIsSettingsPage] = React.useState(false)
+  let history = useHistory()
+
+  // Dashboard links
+  const linkAddresses = {
+    dashboard: '/dashboard',
+    settings: '/settings',
+    addExpense: '/add-expense',
+    report: '/report',
+  }
+  React.useEffect(() => {
+    // Disable settings button link if page is already settings
+    history.location.pathname === linkAddresses.settings
+      ? setIsSettingsPage(true)
+      : setIsSettingsPage(false)
+  }, [history, linkAddresses.settings])
+
+  // Redirect to page
+  const redirectToPage = (link: string): void => {
+    history.push(link)
+  }
+
   return (
     <Theme>
       <Grid>
-        <DashboardHeaderContainer />
+        <DashboardHeaderContainer>
+          <Header title={props.title} />
+          <Icon
+            icon={userIcon}
+            onClick={() => redirectToPage(linkAddresses.settings)}
+            alt="Settings"
+            shadow
+            disabled={isSettingsPage}
+          />
+        </DashboardHeaderContainer>
         <DashboardSidenavContainer isActive={false} />
         <DashboardMainContainer />
         <DashboardMobileNavigation>
-          <img src={addIcon} alt="reports" />
+          <Icon
+            onClick={() => redirectToPage(linkAddresses.dashboard)}
+            icon={expensesIcon}
+            alt="report"
+            inverted
+          />
+          <Icon
+            onClick={() => redirectToPage(linkAddresses.addExpense)}
+            icon={addIcon}
+            alt="add expense"
+            shadow
+          />
+          <Icon
+            onClick={() => redirectToPage(linkAddresses.report)}
+            icon={reportIcon}
+            alt="expenses"
+            inverted
+          />
         </DashboardMobileNavigation>
       </Grid>
     </Theme>
