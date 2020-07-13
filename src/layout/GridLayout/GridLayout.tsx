@@ -19,6 +19,7 @@ interface DashboardSidenavContainerProps {
 
 export interface DashboardProps {
   title: string
+  children: React.ReactNode
 }
 
 export const Grid = styled.div`
@@ -38,6 +39,7 @@ export const Grid = styled.div`
 export const DashboardMainContainer = styled.div`
   grid-area: main;
   background-color: ${(props) => props.theme.colors.lightSecondary};
+  padding: 0 36px;
 `
 
 export const DashboardHeaderContainer = styled.div`
@@ -132,7 +134,7 @@ export const DashboardSidenavHr = styled.hr`
 // - Links are working
 // - Page is settings, icon is disabled
 
-const Dashboard: React.FC<DashboardProps> = (props) => {
+const GridLayout: React.FC<DashboardProps> = (props) => {
   const [isSettingsPage, setIsSettingsPage] = React.useState(false)
   let history = useHistory()
 
@@ -169,7 +171,7 @@ const Dashboard: React.FC<DashboardProps> = (props) => {
           />
         </DashboardHeaderContainer>
         <DashboardSidenavContainer isActive={false} />
-        <DashboardMainContainer />
+        <DashboardMainContainer>{props.children}</DashboardMainContainer>
         <DashboardMobileNavigation>
           <Icon
             onClick={() => redirectToPage(linkAddresses.dashboard)}
@@ -195,4 +197,4 @@ const Dashboard: React.FC<DashboardProps> = (props) => {
   )
 }
 
-export default Dashboard
+export default GridLayout

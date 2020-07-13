@@ -11,6 +11,7 @@ export interface CardProps {
 const Card = styled.div<CardProps>`
   position: relative;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   margin: auto;
@@ -18,9 +19,14 @@ const Card = styled.div<CardProps>`
   box-shadow: 2px 0px 15px rgba(0, 0, 0, 0.05);
   border-radius: ${(props) => props.theme.misc.borderRadius};
   width: 100%;
-  height: 100%;
   max-width: 100%;
   overflow-x: hidden;
+  padding-top: 18px;
+  padding-bottom: 18px;
+  padding-left: 18px;
+  padding-right: 18px;
+  margin-top: 36px;
+  margin-bottom: 36px;
   font-family: ${(props) => props.theme.fonts[1]};
   @media ${device.laptop} {
     width: ${(props) =>

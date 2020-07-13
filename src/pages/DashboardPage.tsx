@@ -1,7 +1,7 @@
 import React from 'react'
-import Dashboard from '../layout/GridLayout/GridLayout'
+import GridLayout from '../layout/GridLayout/GridLayout'
 const DashboardPage: React.FC = () => {
-  return <Dashboard title="Dashboard" />
+  return <GridLayout title="Dashboard">fadsf</GridLayout>
 }
 
 export default DashboardPage

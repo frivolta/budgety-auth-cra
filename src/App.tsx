@@ -20,6 +20,8 @@ import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
 import { AuthContext } from './context/auth/useAuth'
+import SettingsPage from './pages/SettingsPage'
+import { useHistory } from 'react-router-dom'
 
 export type Token = {
   tokens: string
@@ -33,17 +35,23 @@ toast.configure({
 })
 
 const App: React.SFC = () => {
-  const getLocalStorageToken = (): Token | null => {
+  const getLocalStorageToken = (): Token | undefined => {
     const tokens = localStorage.getItem('tokens')
     return tokens ? JSON.parse(tokens) : undefined
   }
 
   const setTokens = (data: Token) => {
-    localStorage.setItem('tokens', JSON.stringify(data))
-    setAuthTokens(data)
+    if (data) {
+      localStorage.setItem('tokens', JSON.stringify(data))
+      setAuthTokens(data)
+    } else {
+      setAuthTokens(undefined)
+    }
   }
 
-  const [authTokens, setAuthTokens] = useState(getLocalStorageToken())
+  const [authTokens, setAuthTokens] = useState<Token | undefined>(
+    getLocalStorageToken()
+  )
 
   return (
     <AuthContext.Provider value={{ authTokens, setAuthTokens: setTokens }}>
@@ -55,6 +63,7 @@ const App: React.SFC = () => {
             <Route exact path="/signup" component={SignupPage} />
             <Route exact path="/signin" component={SigninPage} />
             <PrivateRoute exact path="/dashboard" component={DashboardPage} />
+            <PrivateRoute exact path="/settings" component={SettingsPage} />
             <Route component={ErrorPage} />
           </Switch>
         </Router>
