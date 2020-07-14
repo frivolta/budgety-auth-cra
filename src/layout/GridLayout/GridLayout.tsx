@@ -129,7 +129,7 @@ export const DashboardSidenavHr = styled.hr`
   margin-right: 32px;
 `
 
-// Test
+// @Test
 // - Title is present
 // - Links are working
 // - Page is settings, icon is disabled

@@ -22,6 +22,7 @@ import 'react-toastify/dist/ReactToastify.css'
 import { AuthContext } from './context/auth/useAuth'
 import SettingsPage from './pages/SettingsPage'
 import { useHistory } from 'react-router-dom'
+import EditSettingsPage from './pages/EditSettingsPage'
 
 export type Token = {
   tokens: string
@@ -64,6 +65,11 @@ const App: React.SFC = () => {
             <Route exact path="/signin" component={SigninPage} />
             <PrivateRoute exact path="/dashboard" component={DashboardPage} />
             <PrivateRoute exact path="/settings" component={SettingsPage} />
+            <PrivateRoute
+              exact
+              path="/settings/edit"
+              component={EditSettingsPage}
+            />
             <Route component={ErrorPage} />
           </Switch>
         </Router>
