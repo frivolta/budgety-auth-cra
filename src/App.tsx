@@ -31,13 +31,14 @@ import { store } from './redux/configureStore'
 
 import firebase from 'firebase/app'
 import 'firebase/auth'
+import 'firebase/database'
 import { ReactReduxFirebaseProvider } from 'react-redux-firebase'
 import { fbConfig } from './config/firebaseConfig'
 
 // react-redux-firebase config
 const rrfConfig = {
   userProfile: 'users',
-  // useFirestoreForProfile: true // Firestore for Profile instead of Realtime DB
+  useFirestoreForProfile: true, // Firestore for Profile instead of Realtime DB
   // enableClaims: true // Get custom claims along with the profile
 }
 
