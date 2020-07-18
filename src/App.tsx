@@ -21,8 +21,11 @@ import 'react-toastify/dist/ReactToastify.css'
 
 import { AuthContext } from './context/auth/useAuth'
 import SettingsPage from './pages/SettingsPage'
-import { useHistory } from 'react-router-dom'
 import EditSettingsPage from './pages/EditSettingsPage'
+
+// Redux
+import { Provider } from 'react-redux'
+import { store } from './redux/configureStore'
 
 export type Token = {
   tokens: string
@@ -57,22 +60,24 @@ const App: React.SFC = () => {
   return (
     <AuthContext.Provider value={{ authTokens, setAuthTokens: setTokens }}>
       <ApolloProvider client={client}>
-        <ToastContainer />
-        <Router>
-          <Switch>
-            <Route exact path="/" component={IndexPage} />
-            <Route exact path="/signup" component={SignupPage} />
-            <Route exact path="/signin" component={SigninPage} />
-            <PrivateRoute exact path="/dashboard" component={DashboardPage} />
-            <PrivateRoute exact path="/settings" component={SettingsPage} />
-            <PrivateRoute
-              exact
-              path="/settings/edit"
-              component={EditSettingsPage}
-            />
-            <Route component={ErrorPage} />
-          </Switch>
-        </Router>
+        <Provider store={store}>
+          <ToastContainer />
+          <Router>
+            <Switch>
+              <Route exact path="/" component={IndexPage} />
+              <Route exact path="/signup" component={SignupPage} />
+              <Route exact path="/signin" component={SigninPage} />
+              <PrivateRoute exact path="/dashboard" component={DashboardPage} />
+              <PrivateRoute exact path="/settings" component={SettingsPage} />
+              <PrivateRoute
+                exact
+                path="/settings/edit"
+                component={EditSettingsPage}
+              />
+              <Route component={ErrorPage} />
+            </Switch>
+          </Router>
+        </Provider>
       </ApolloProvider>
     </AuthContext.Provider>
   )
