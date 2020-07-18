@@ -24,6 +24,7 @@
     "apollo-link-error": "^1.1.13",
     "apollo-link-http": "^1.5.17",
     "dotenv": "^8.2.0",
+    "firebase": "^7.16.1",
     "formik": "^2.1.4",
     "graphql": "^15.1.0",
     "isomorphic-fetch": "^2.2.1",

@@ -27,6 +27,31 @@ import EditSettingsPage from './pages/EditSettingsPage'
 import { Provider } from 'react-redux'
 import { store } from './redux/configureStore'
 
+// Firebase config
+
+import firebase from 'firebase/app'
+import 'firebase/auth'
+import { ReactReduxFirebaseProvider } from 'react-redux-firebase'
+import { fbConfig } from './config/firebaseConfig'
+
+// react-redux-firebase config
+const rrfConfig = {
+  userProfile: 'users',
+  // useFirestoreForProfile: true // Firestore for Profile instead of Realtime DB
+  // enableClaims: true // Get custom claims along with the profile
+}
+
+const rrfProps = {
+  firebase,
+  config: rrfConfig,
+  dispatch: store.dispatch,
+  // createFirestoreInstance // <- needed if using firestore
+}
+
+firebase.initializeApp(fbConfig)
+
+// ./Firebase config
+
 export type Token = {
   tokens: string
 }
@@ -61,22 +86,28 @@ const App: React.SFC = () => {
     <AuthContext.Provider value={{ authTokens, setAuthTokens: setTokens }}>
       <ApolloProvider client={client}>
         <Provider store={store}>
-          <ToastContainer />
-          <Router>
-            <Switch>
-              <Route exact path="/" component={IndexPage} />
-              <Route exact path="/signup" component={SignupPage} />
-              <Route exact path="/signin" component={SigninPage} />
-              <PrivateRoute exact path="/dashboard" component={DashboardPage} />
-              <PrivateRoute exact path="/settings" component={SettingsPage} />
-              <PrivateRoute
-                exact
-                path="/settings/edit"
-                component={EditSettingsPage}
-              />
-              <Route component={ErrorPage} />
-            </Switch>
-          </Router>
+          <ReactReduxFirebaseProvider {...rrfProps}>
+            <ToastContainer />
+            <Router>
+              <Switch>
+                <Route exact path="/" component={IndexPage} />
+                <Route exact path="/signup" component={SignupPage} />
+                <Route exact path="/signin" component={SigninPage} />
+                <PrivateRoute
+                  exact
+                  path="/dashboard"
+                  component={DashboardPage}
+                />
+                <PrivateRoute exact path="/settings" component={SettingsPage} />
+                <PrivateRoute
+                  exact
+                  path="/settings/edit"
+                  component={EditSettingsPage}
+                />
+                <Route component={ErrorPage} />
+              </Switch>
+            </Router>
+          </ReactReduxFirebaseProvider>
         </Provider>
       </ApolloProvider>
     </AuthContext.Provider>
