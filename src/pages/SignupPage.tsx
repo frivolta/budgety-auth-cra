@@ -15,8 +15,6 @@ import { toasterError, toasterSuccess } from '../utils/toaster'
 import { useAuth } from '../context/auth/useAuth'
 import { useHistory } from 'react-router-dom'
 import firebase from 'firebase/app'
-import 'firebase/auth'
-import 'firebase/database'
 import { authErrors } from '../types/firebaseAuth'
 
 export const SignupCard = styled.div`

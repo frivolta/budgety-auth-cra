@@ -16,6 +16,9 @@ import { SIGNIN_ERRORS, SIGNIN_SUCCESS } from '../utils/messages'
 import { useAuth } from '../context/auth/useAuth'
 import { useHistory } from 'react-router-dom'
 import { toasterInfo, toasterError } from '../utils/toaster'
+import { useFirebase } from 'react-redux-firebase'
+import { useSelector } from 'react-redux'
+import { authErrors } from '../types/firebaseAuth'
 
 export const Signin = styled.div`
   position: relative;
@@ -61,7 +64,9 @@ export const LOGIN = gql`
 
 const SigninPage: React.FC = () => {
   const useAuthValues: any = useAuth()
-  const [signin, { loading, error }] = useMutation(LOGIN)
+  const firebase = useFirebase()
+  const [error, setError] = React.useState<undefined | authErrors>(undefined)
+  const [isLoading, setIsLoading] = React.useState(false)
   const isLoggedIn = useAuthValues && useAuthValues.authTokens
   let history = useHistory()
 
@@ -80,14 +85,16 @@ const SigninPage: React.FC = () => {
     validationSchema: SigninSchema,
     onSubmit: async (values) => {
       try {
-        console.log(values)
-        const res: any = await signin({
-          variables: { email: values.email, password: values.password },
-        })
-        await useAuthValues.setAuthTokens(res.data.login.token)
+        setIsLoading(true)
+        await firebase
+          .auth()
+          .signInWithEmailAndPassword(values.email, values.password)
         toasterInfo(SIGNIN_SUCCESS.success)
+        setIsLoading(false)
         formik.resetForm()
-      } catch {
+      } catch (error) {
+        setIsLoading(false)
+        setError(error)
         toasterError(SIGNIN_ERRORS.genericError)
       }
     },
@@ -130,16 +137,12 @@ const SigninPage: React.FC = () => {
                 }
                 errorMessage={formik.errors.password}
               />
-              {error && (
-                <CustomLabel type="error">
-                  {formatNetworkErrorMessages(error.message)}
-                </CustomLabel>
-              )}
+              {error && <CustomLabel type="error">{error.message}</CustomLabel>}
               <CustomButton
                 text="Sign in"
-                disabled={!formik.isValid || !formik.dirty || loading}
+                disabled={!formik.isValid || !formik.dirty || isLoading}
                 margin="32px 0 16px 0"
-                isLoading={loading}
+                isLoading={isLoading}
                 data-testid="SubmitButton"
               />
               <CustomLabel>
