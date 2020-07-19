@@ -5,19 +5,19 @@ import { useAuth } from '../../context/auth/useAuth'
 
 interface PrivateRouteProps extends RouteProps {
   component: any
+  authenticated: boolean
 }
 
-const PrivateRoute = ({ component: Component, ...rest }: PrivateRouteProps) => {
-  const isAuthenticated: any = useAuth()
+const PrivateRoute = ({
+  component: Component,
+  authenticated,
+  ...rest
+}: PrivateRouteProps) => {
   return (
     <Route
       {...rest}
       render={(props) =>
-        isAuthenticated && isAuthenticated.authTokens ? (
-          <Component {...props} />
-        ) : (
-          <Redirect to="/signin" />
-        )
+        authenticated ? <Component {...props} /> : <Redirect to="/signin" />
       }
     />
   )

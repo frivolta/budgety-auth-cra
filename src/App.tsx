@@ -28,7 +28,6 @@ import { Provider } from 'react-redux'
 import { store } from './redux/configureStore'
 
 // Firebase config
-
 import firebase from 'firebase/app'
 import 'firebase/auth'
 import 'firebase/database'
@@ -65,53 +64,59 @@ toast.configure({
 })
 
 const App: React.SFC = () => {
-  const getLocalStorageToken = (): Token | undefined => {
-    const tokens = localStorage.getItem('tokens')
-    return tokens ? JSON.parse(tokens) : undefined
-  }
+  const [authentication, setAuthState] = useState({
+    authenticated: false,
+    initializing: true,
+  })
 
-  const setTokens = (data: Token) => {
-    if (data) {
-      localStorage.setItem('tokens', JSON.stringify(data))
-      setAuthTokens(data)
-    } else {
-      setAuthTokens(undefined)
-    }
-  }
-
-  const [authTokens, setAuthTokens] = useState<Token | undefined>(
-    getLocalStorageToken()
+  React.useEffect(
+    () =>
+      firebase.auth().onAuthStateChanged((user) => {
+        setAuthState({
+          authenticated: !!user,
+          initializing: false,
+        })
+      }),
+    [setAuthState, authentication.authenticated]
   )
 
+  if (authentication.initializing) {
+    return <div>Loading</div>
+  }
   return (
-    <AuthContext.Provider value={{ authTokens, setAuthTokens: setTokens }}>
-      <ApolloProvider client={client}>
-        <Provider store={store}>
-          <ReactReduxFirebaseProvider {...rrfProps}>
-            <ToastContainer />
-            <Router>
-              <Switch>
-                <Route exact path="/" component={IndexPage} />
-                <Route exact path="/signup" component={SignupPage} />
-                <Route exact path="/signin" component={SigninPage} />
-                <PrivateRoute
-                  exact
-                  path="/dashboard"
-                  component={DashboardPage}
-                />
-                <PrivateRoute exact path="/settings" component={SettingsPage} />
-                <PrivateRoute
-                  exact
-                  path="/settings/edit"
-                  component={EditSettingsPage}
-                />
-                <Route component={ErrorPage} />
-              </Switch>
-            </Router>
-          </ReactReduxFirebaseProvider>
-        </Provider>
-      </ApolloProvider>
-    </AuthContext.Provider>
+    <ApolloProvider client={client}>
+      <Provider store={store}>
+        <ReactReduxFirebaseProvider {...rrfProps}>
+          <ToastContainer />
+          <Router>
+            <Switch>
+              <Route exact path="/" component={IndexPage} />
+              <Route exact path="/signup" component={SignupPage} />
+              <Route exact path="/signin" component={SigninPage} />
+              <PrivateRoute
+                exact
+                path="/dashboard"
+                component={DashboardPage}
+                authenticated={authentication.authenticated}
+              />
+              <PrivateRoute
+                exact
+                path="/settings"
+                component={SettingsPage}
+                authenticated={authentication.authenticated}
+              />
+              <PrivateRoute
+                exact
+                path="/settings/edit"
+                component={EditSettingsPage}
+                authenticated={authentication.authenticated}
+              />
+              <Route component={ErrorPage} />
+            </Switch>
+          </Router>
+        </ReactReduxFirebaseProvider>
+      </Provider>
+    </ApolloProvider>
   )
 }
 export default App

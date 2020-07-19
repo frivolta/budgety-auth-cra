@@ -17,7 +17,6 @@ import { useAuth } from '../context/auth/useAuth'
 import { useHistory } from 'react-router-dom'
 import { toasterInfo, toasterError } from '../utils/toaster'
 import { useFirebase } from 'react-redux-firebase'
-import { useSelector } from 'react-redux'
 import { authErrors } from '../types/firebaseAuth'
 
 export const Signin = styled.div`
