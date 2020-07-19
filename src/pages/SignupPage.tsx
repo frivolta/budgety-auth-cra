@@ -1,9 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import gql from 'graphql-tag'
-import { useMutation } from '@apollo/react-hooks'
 import { useFormik } from 'formik'
-import { formatNetworkErrorMessages } from '../utils/format'
 import Theme, { theme } from '../styles/Theme'
 import { FullPageLayout } from '../layout/FullPageLayout'
 import { device } from '../styles/config'
@@ -16,6 +14,10 @@ import { SIGNUP_SUCCESS, SIGNUP_ERRORS } from '../utils/messages'
 import { toasterError, toasterSuccess } from '../utils/toaster'
 import { useAuth } from '../context/auth/useAuth'
 import { useHistory } from 'react-router-dom'
+import firebase from 'firebase/app'
+import 'firebase/auth'
+import 'firebase/database'
+import { authErrors } from '../types/firebaseAuth'
 
 export const SignupCard = styled.div`
   position: relative;
@@ -56,7 +58,8 @@ export const SIGNUP = gql`
 `
 
 const SignupPage: React.FC = () => {
-  const [signup, { loading, error }] = useMutation(SIGNUP)
+  const [isLoading, setIsloading] = React.useState(false)
+  const [error, setError] = React.useState<undefined | authErrors>(undefined)
   const useAuthValues: any = useAuth()
   let history = useHistory()
 
@@ -76,13 +79,17 @@ const SignupPage: React.FC = () => {
     validationSchema: SignupSchema,
     onSubmit: async (values) => {
       try {
-        await signup({
-          variables: { email: values.email, password: values.password },
-        })
+        setIsloading(true)
+        await firebase
+          .auth()
+          .createUserWithEmailAndPassword(values.email, values.password)
         toasterSuccess(SIGNUP_SUCCESS.success)
         formik.resetForm()
-      } catch {
+        setIsloading(false)
+      } catch (error) {
+        setIsloading(false)
         toasterError(SIGNUP_ERRORS.genericError)
+        setError(error)
       }
     },
   })
@@ -140,16 +147,12 @@ const SignupPage: React.FC = () => {
                 }
                 errorMessage={formik.errors.confirmPassword}
               />
-              {error && (
-                <CustomLabel type="error">
-                  {formatNetworkErrorMessages(error.message)}
-                </CustomLabel>
-              )}
+              {error && <CustomLabel type="error">{error.message}</CustomLabel>}
               <CustomButton
                 text="Sign up"
-                disabled={!formik.isValid || !formik.dirty || loading}
+                disabled={!formik.isValid || !formik.dirty || isLoading}
                 margin="32px 0 16px 0"
-                isLoading={loading}
+                isLoading={isLoading}
                 data-testid="SubmitButton"
               />
               <CustomLabel>
