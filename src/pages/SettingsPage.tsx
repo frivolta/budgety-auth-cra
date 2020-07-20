@@ -4,11 +4,16 @@ import Card from '../components/Card/Card'
 import { H4 } from '../styles/typography'
 import { theme } from '../styles/Theme'
 import { CustomSmallButton } from '../components/SmallButton/SmallButton'
-import { useAuth } from '../context/auth/useAuth'
 import { useHistory } from 'react-router-dom'
 import Avatar from 'react-avatar'
 import styled from 'styled-components'
 import ActionCard from '../components/ActionCard/ActionCard'
+import { useFirebase, isEmpty } from 'react-redux-firebase'
+import { LOGOUT_SUCCESS, LOGOUT_ERRORS } from '../utils/messages'
+import { toasterInfo, toasterError } from '../utils/toaster'
+import { useSelector } from 'react-redux'
+import { AppState } from '../redux/configureStore'
+import { useFirestoreConnect } from 'react-redux-firebase'
 
 // @Test
 // - User can see account name or empty
@@ -19,13 +24,27 @@ import ActionCard from '../components/ActionCard/ActionCard'
 // - User cannot click on "Go to settings icon"
 
 const SettingsPage: React.FC = () => {
-  const auth: any = useAuth()
-  let history = useHistory()
+  const history = useHistory()
+  const firebase = useFirebase()
+  const auth = useSelector((state: AppState) => state.firebase.auth)
+  useFirestoreConnect(() => [
+    { collection: 'profiles', doc: auth.uid, storeAs: 'userProfile' },
+  ])
+  const userProfile = useSelector(
+    (state: AppState) => state.firestore.data.userProfile
+  )
+  const profileIsLoading = useSelector(
+    (state: AppState) => state.firestore.status.requesting.userProfile
+  )
 
-  const handleLogout = () => {
-    auth?.setAuthTokens()
-    localStorage.removeItem('tokens')
-    history.push('/signin')
+  const handleLogout = async () => {
+    try {
+      await firebase.auth().signOut()
+      toasterInfo(LOGOUT_SUCCESS.success)
+      history.push('/signin')
+    } catch {
+      toasterError(LOGOUT_ERRORS.genericError)
+    }
   }
 
   const redirectToEditSettings = () => {
@@ -38,26 +57,34 @@ const SettingsPage: React.FC = () => {
 
   return (
     <GridLayout title="Settings">
-      <Card>
-        <AvatarContainer>
-          <Avatar name="email@email.it" size="150" round />
-        </AvatarContainer>
-        <H4 color={theme.colors.darkPrimary}>email@email.it</H4>
-        <CustomSmallButton text="Logout" handleClick={handleLogout} />
-      </Card>
+      {auth.isLoaded && !profileIsLoading && (
+        <Card>
+          <AvatarContainer>
+            {auth.email && <Avatar name={auth.email} size="150" round />}
+          </AvatarContainer>
+          <H4 color={theme.colors.darkPrimary}>{auth && auth.email}</H4>
+          <CustomSmallButton text="Logout" handleClick={handleLogout} />
+        </Card>
+      )}
+      {!profileIsLoading && userProfile?.isEmpty && (
+        <Card>
+          <p>Edit the settings below to start using the applicaiton</p>
+        </Card>
+      )}
+
       <ActionCard
         title="ACCOUNT NAME"
-        text="Banco desio"
+        text={!profileIsLoading ? userProfile?.balanceName : 'Loading...'}
         action={redirectToEditSettings}
       />
       <ActionCard
         title="STARTING BALANCE"
-        text="€ 10.000,00"
+        text={!profileIsLoading ? userProfile?.startingBalance : 'Loading...'}
         action={redirectToEditSettings}
       />
       <ActionCard
         title="MONTHLY BUDGET"
-        text="€ 1.400,00"
+        text={!profileIsLoading ? userProfile?.monthlyBudget : 'Loading...'}
         action={redirectToEditSettings}
       />
     </GridLayout>

@@ -12,10 +12,10 @@ import { CustomLabel } from '../components/Label/Label'
 import { SignupSchema } from '../validation/Signup.validation'
 import { SIGNUP_SUCCESS, SIGNUP_ERRORS } from '../utils/messages'
 import { toasterError, toasterSuccess } from '../utils/toaster'
-import { useAuth } from '../context/auth/useAuth'
 import { useHistory } from 'react-router-dom'
 import firebase from 'firebase/app'
 import { authErrors } from '../types/firebaseAuth'
+import { defaultUserProfile } from '../constants/user'
 
 export const SignupCard = styled.div`
   position: relative;
@@ -58,15 +58,12 @@ export const SIGNUP = gql`
 const SignupPage: React.FC = () => {
   const [isLoading, setIsloading] = React.useState(false)
   const [error, setError] = React.useState<undefined | authErrors>(undefined)
-  const useAuthValues: any = useAuth()
-  let history = useHistory()
+  const history = useHistory()
 
-  React.useEffect(() => {
+  React.useMemo(() => {
     // Check if user is already logged in
-    if (useAuthValues.authTokens) {
-      history.push('/dashboard')
-    }
-  }, [useAuthValues.authTokens, history])
+    firebase.auth().currentUser && history.push('/dashboard')
+  }, [history])
 
   const formik = useFormik({
     initialValues: {
@@ -78,12 +75,18 @@ const SignupPage: React.FC = () => {
     onSubmit: async (values) => {
       try {
         setIsloading(true)
-        await firebase
+        const user = await firebase
           .auth()
           .createUserWithEmailAndPassword(values.email, values.password)
+        await firebase
+          .firestore()
+          .collection('profiles')
+          .doc(user.user?.uid)
+          .set(defaultUserProfile)
         toasterSuccess(SIGNUP_SUCCESS.success)
         formik.resetForm()
         setIsloading(false)
+        history.push('/dashboard')
       } catch (error) {
         setIsloading(false)
         toasterError(SIGNUP_ERRORS.genericError)

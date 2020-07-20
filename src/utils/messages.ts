@@ -20,3 +20,11 @@ export enum SIGNUP_SUCCESS {
 export enum SIGNIN_SUCCESS {
   success = 'You succesfully signed in!',
 }
+
+export enum LOGOUT_SUCCESS {
+  success = 'You are now logged out',
+}
+
+export enum LOGOUT_ERRORS {
+  genericError = 'Oops, an error occoured try again later',
+}

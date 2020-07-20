@@ -66,15 +66,12 @@ const SigninPage: React.FC = () => {
   const firebase = useFirebase()
   const [error, setError] = React.useState<undefined | authErrors>(undefined)
   const [isLoading, setIsLoading] = React.useState(false)
-  const isLoggedIn = useAuthValues && useAuthValues.authTokens
   let history = useHistory()
 
-  React.useEffect(() => {
+  React.useMemo(() => {
     // Check if user is already logged in
-    if (useAuthValues && useAuthValues.authTokens) {
-      history.push('/dashboard')
-    }
-  }, [isLoggedIn, history, useAuthValues])
+    firebase.auth().currentUser && history.push('/dashboard')
+  }, [history, firebase])
 
   const formik = useFormik({
     initialValues: {
@@ -88,6 +85,7 @@ const SigninPage: React.FC = () => {
         await firebase
           .auth()
           .signInWithEmailAndPassword(values.email, values.password)
+        history.push('/dashboard')
         toasterInfo(SIGNIN_SUCCESS.success)
         setIsLoading(false)
         formik.resetForm()

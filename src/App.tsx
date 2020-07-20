@@ -31,7 +31,9 @@ import { store } from './redux/configureStore'
 import firebase from 'firebase/app'
 import 'firebase/auth'
 import 'firebase/database'
+import 'firebase/firestore'
 import { ReactReduxFirebaseProvider } from 'react-redux-firebase'
+import { createFirestoreInstance } from 'redux-firestore'
 import { fbConfig } from './config/firebaseConfig'
 
 // react-redux-firebase config
@@ -45,10 +47,11 @@ const rrfProps = {
   firebase,
   config: rrfConfig,
   dispatch: store.dispatch,
-  // createFirestoreInstance // <- needed if using firestore
+  createFirestoreInstance,
 }
 
 firebase.initializeApp(fbConfig)
+firebase.firestore()
 
 // ./Firebase config
 
