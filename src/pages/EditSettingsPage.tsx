@@ -1,16 +1,19 @@
 import React from 'react'
 import GridLayout from '../layout/GridLayout/GridLayout'
 import Card from '../components/Card/Card'
-import { H4 } from '../styles/typography'
-import { theme } from '../styles/Theme'
-import { useHistory } from 'react-router-dom'
+import firebase from 'firebase/app'
 import styled from 'styled-components'
 import { Input } from '../components/Input/Input'
 import { CustomLabel } from '../components/Label/Label'
 import { CustomButton } from '../components/Button/Button'
 import { useFormik } from 'formik'
 import { formatNetworkErrorMessages } from '../utils/format'
-
+import { Link } from 'react-router-dom'
+import { AppState } from '../redux/configureStore'
+import { useSelector } from 'react-redux'
+import { useFirestoreConnect } from 'react-redux-firebase'
+import { UserProfile } from '../types/user'
+import { defaultUserProfile } from '../constants/user'
 export const FormikForm = styled.form`
   width: 100%;
 `
@@ -23,19 +26,40 @@ export const FormikForm = styled.form`
 // - Numbers are correctly formatted
 
 const EditSettingsPage: React.FC = () => {
-  let history = useHistory()
   let error: any = undefined
   const loading = false
+  const auth = useSelector((state: AppState) => state.firebase.auth)
+  useFirestoreConnect(() => [
+    { collection: 'profiles', doc: auth.uid, storeAs: 'userProfile' },
+  ])
+  const userProfile = useSelector(
+    (state: AppState) => state.firestore.data.userProfile
+  )
+  const profileIsLoading = useSelector(
+    (state: AppState) => state.firestore.status.requesting.userProfile
+  )
 
   const formik = useFormik({
     initialValues: {
-      accountName: 'Banco Desio',
-      startingBalance: '€ 10.000,00',
-      monthlyBalance: '€ 1.400,00',
+      balanceName: userProfile?.balanceName || defaultUserProfile.balanceName,
+      startingBalance:
+        userProfile?.startingBalance || defaultUserProfile.startingBalance,
+      monthlyBudget:
+        userProfile?.monthlyBudget || defaultUserProfile.monthlyBudget,
     },
     //    validationSchema: SigninSchema,
     onSubmit: async (values) => {
-      console.log('editing values')
+      const editedUserProfile: UserProfile = {
+        isEmpty: false,
+        balanceName: values.balanceName,
+        startingBalance: values.startingBalance,
+        monthlyBudget: values.monthlyBudget,
+      }
+      await firebase
+        .firestore()
+        .collection('profiles')
+        .doc(auth.uid)
+        .set(editedUserProfile)
     },
   })
 
@@ -44,23 +68,27 @@ const EditSettingsPage: React.FC = () => {
       <Card customWidth={100}>
         <FormikForm onSubmit={formik.handleSubmit}>
           <Input
-            name="accountName"
-            placeholder="account name"
+            name="balanceName"
+            placeholder={
+              !profileIsLoading ? userProfile?.balanceName : 'Loading...'
+            }
             type="text"
             handleChange={formik.handleChange}
             handleBlur={formik.handleBlur}
-            value={formik.values.accountName}
+            value={formik.values.balanceName}
             label="Account name"
             hasErrors={
-              formik.touched.accountName && formik.errors.accountName
+              formik.touched.balanceName && formik.errors.balanceName
                 ? true
                 : false
             }
-            errorMessage={formik.errors.accountName}
+            errorMessage="{formik.errors.balanceName}"
           />
           <Input
             name="startingBalance"
-            placeholder="Starting Balance"
+            placeholder={
+              !profileIsLoading ? userProfile?.startingBalance : 'Loading...'
+            }
             type="text"
             handleChange={formik.handleChange}
             handleBlur={formik.handleBlur}
@@ -71,22 +99,24 @@ const EditSettingsPage: React.FC = () => {
                 ? true
                 : false
             }
-            errorMessage={formik.errors.startingBalance}
+            errorMessage="{formik.errors.startingBalance}"
           />
           <Input
-            name="monthlyBalance"
-            placeholder="Monthly Budget"
+            name="monthlyBudget"
+            placeholder={
+              !profileIsLoading ? userProfile?.monthlyBudget : 'Loading...'
+            }
             type="text"
             handleChange={formik.handleChange}
             handleBlur={formik.handleBlur}
-            value={formik.values.monthlyBalance}
+            value={formik.values.monthlyBudget}
             label="Monthly Budget"
             hasErrors={
-              formik.touched.monthlyBalance && formik.errors.monthlyBalance
+              formik.touched.monthlyBudget && formik.errors.monthlyBudget
                 ? true
                 : false
             }
-            errorMessage={formik.errors.monthlyBalance}
+            errorMessage="{formik.errors.monthlyBudget}"
           />
           {error && (
             <CustomLabel type="error">
@@ -101,7 +131,7 @@ const EditSettingsPage: React.FC = () => {
             data-testid="SubmitButton"
           />
           <CustomLabel>
-            Cancel and go back to <a href="/settings">Settings Page.</a>
+            Cancel and go back to <Link to="/settings">Settings Page.</Link>
           </CustomLabel>
         </FormikForm>
       </Card>
