@@ -28,3 +28,9 @@ export enum LOGOUT_SUCCESS {
 export enum LOGOUT_ERRORS {
   genericError = 'Oops, an error occoured try again later',
 }
+
+export enum EDIT_SETTINGS_ERROR {
+  balanceNameRequired = 'An account name is required',
+  startingBalance = 'A starting balance is required',
+  monthlyBudget = 'A monthly budget is required',
+}

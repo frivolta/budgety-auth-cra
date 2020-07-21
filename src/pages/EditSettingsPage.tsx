@@ -14,6 +14,7 @@ import { useSelector } from 'react-redux'
 import { useFirestoreConnect } from 'react-redux-firebase'
 import { UserProfile } from '../types/user'
 import { defaultUserProfile } from '../constants/user'
+import { EditSettingsSchema } from '../validation/Settings.validation'
 export const FormikForm = styled.form`
   width: 100%;
 `
@@ -47,7 +48,7 @@ const EditSettingsPage: React.FC = () => {
       monthlyBudget:
         userProfile?.monthlyBudget || defaultUserProfile.monthlyBudget,
     },
-    //    validationSchema: SigninSchema,
+    validationSchema: EditSettingsSchema,
     onSubmit: async (values) => {
       const editedUserProfile: UserProfile = {
         isEmpty: false,
@@ -82,7 +83,7 @@ const EditSettingsPage: React.FC = () => {
                 ? true
                 : false
             }
-            errorMessage="{formik.errors.balanceName}"
+            errorMessage={formik.errors.balanceName?.toString()}
           />
           <Input
             name="startingBalance"
@@ -99,7 +100,7 @@ const EditSettingsPage: React.FC = () => {
                 ? true
                 : false
             }
-            errorMessage="{formik.errors.startingBalance}"
+            errorMessage={formik.errors.startingBalance?.toString()}
           />
           <Input
             name="monthlyBudget"
@@ -116,7 +117,7 @@ const EditSettingsPage: React.FC = () => {
                 ? true
                 : false
             }
-            errorMessage="{formik.errors.monthlyBudget}"
+            errorMessage={formik.errors.monthlyBudget?.toString()}
           />
           {error && (
             <CustomLabel type="error">
