@@ -4,6 +4,7 @@ import { action } from '@storybook/addon-actions'
 import Card from '../Card/Card'
 import CardContainer from '../Card/CardContainer'
 import { Input } from '../Input/Input'
+import Example from '../CurrencyInput/CurrencyInputComponent'
 
 storiesOf('Components', module).add('Input', () => (
   <Card customWidth={50}>
@@ -43,6 +44,7 @@ storiesOf('Components', module).add('Input', () => (
         handleBlur={action('blur')}
         label="Password input"
       />
+      <Example />
     </CardContainer>
   </Card>
 ))

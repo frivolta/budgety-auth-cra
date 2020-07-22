@@ -107,7 +107,7 @@ const EditSettingsPage: React.FC = () => {
             placeholder={
               !profileIsLoading ? userProfile?.monthlyBudget : 'Loading...'
             }
-            type="text"
+            type="number"
             handleChange={formik.handleChange}
             handleBlur={formik.handleBlur}
             value={formik.values.monthlyBudget}
