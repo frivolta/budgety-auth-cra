@@ -1,69 +1,86 @@
 type Overwrite<T, U> = Pick<T, Exclude<keyof T, keyof U>> & U
 
-export type CurrencyInputProps = Overwrite<
-  React.InputHTMLAttributes<HTMLInputElement>,
-  {
-    /**
-     * Allow decimals
-     * Default = true
-     */
-    allowDecimals?: boolean
+export type CurrencyInputProps = {
+  /**
+   * Allow decimals
+   * Default = true
+   */
+  allowDecimals?: boolean
 
-    /**
-     * Component id
-     */
-    id?: string
+  /**
+   * Component id
+   */
+  id?: string
 
-    /**
-     * Component name
-     */
-    name?: string
+  /**
+   * Component name
+   */
+  name: string
 
-    /**
-     * Class names
-     */
-    className?: string
+  /**
+   * Class names
+   */
+  className?: string
 
-    /**
-     * Limit length of decimals allowed
-     * Default = 2
-     */
-    decimalsLimit?: number
+  /**
+   * Limit length of decimals allowed
+   * Default = 2
+   */
+  decimalsLimit?: number
 
-    /**
-     * Default value
-     */
-    defaultValue?: number
+  /**
+   * Default value
+   */
+  defaultValue?: number
 
-    /**
-     * Disabled
-     * Default = false
-     */
-    disabled?: boolean
+  /**
+   * Disabled
+   * Default = false
+   */
+  disabled?: boolean
 
-    /**
-     * Handle change in value
-     */
-    onChange?: (value: string | undefined, name?: string) => void
+  /**
+   * Handle change in value
+   */
+  onChange?: (value: string | undefined, name?: string) => void
 
-    /**
-     * Placeholder
-     */
-    placeholder?: string
+  /**
+   * Placeholder
+   */
+  placeholder?: string
 
-    /**
-     * Specify decimal precision for padding/trimming
-     */
-    precision?: number
+  /**
+   * Specify decimal precision for padding/trimming
+   */
+  precision?: number
 
-    /**
-     * Include a prefix eg. £
-     */
-    prefix?: string
+  /**
+   * Include a prefix eg. £
+   */
+  prefix?: string
 
-    /**
-     *  Maximum characters the user can enter
-     */
-    maxLength?: number
-  }
->
+  /**
+   *  Maximum characters the user can enter
+   */
+  maxLength?: number
+
+  /**
+   * Input error
+   */
+  hasErrors?: boolean
+
+  /**
+   * Input value
+   */
+  value?: string | number
+
+  /**
+   * Input label
+   */
+  label: string
+
+  /**
+   * Input name
+   */
+  errorMessage?: string
+}

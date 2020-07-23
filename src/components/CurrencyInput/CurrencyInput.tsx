@@ -1,5 +1,11 @@
-import React, { FC, useState, useEffect, useRef } from 'react'
+import React, { FC, useState, useEffect, useRef, ChangeEvent } from 'react'
 import { CurrencyInputProps } from './CurrencyInputProps'
+import {
+  CurrencyInputField,
+  InputContainer,
+  InputLabel,
+  InputError,
+} from '../Input/sharedInputStyles'
 import {
   checkIsValidNumber,
   cleanValue,
@@ -32,9 +38,7 @@ export const CurrencyInput: FC<CurrencyInputProps> = ({
 
   const onFocus = (): number => (stateValue ? stateValue.length : 0)
 
-  const processChange = ({
-    target: { selectionStart, value },
-  }: React.ChangeEvent<HTMLInputElement>): void => {
+  const processChange = ({ target: { selectionStart, value } }: any): void => {
     const valueOnly = cleanValue(value, allowDecimals, decimalsLimit, prefix)
 
     if (!valueOnly) {
@@ -76,22 +80,28 @@ export const CurrencyInput: FC<CurrencyInputProps> = ({
     : undefined
 
   return (
-    <input
-      type="text"
-      inputMode="decimal"
-      id={id}
-      name={name}
-      className={className}
-      onChange={processChange}
-      onBlur={handleOnBlur}
-      onFocus={onFocus}
-      placeholder={placeholder}
-      disabled={disabled}
-      value={formattedPropsValue || stateValue}
-      ref={inputRef}
-      maxLength={maxLength}
-      {...props}
-    />
+    <InputContainer>
+      {props.label && <InputLabel htmlFor={name}>{props.label} </InputLabel>}
+      <CurrencyInputField
+        type="text"
+        inputMode="decimal"
+        id={id}
+        name={name}
+        className={className}
+        onChange={processChange}
+        onBlur={handleOnBlur}
+        onFocus={onFocus}
+        placeholder={placeholder}
+        disabled={disabled}
+        value={formattedPropsValue || stateValue}
+        ref={inputRef}
+        maxLength={maxLength}
+        {...props}
+      />
+      {props.hasErrors && (
+        <InputError data-testid="InputError">{props.errorMessage}</InputError>
+      )}
+    </InputContainer>
   )
 }
 
