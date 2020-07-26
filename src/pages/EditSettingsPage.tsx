@@ -15,6 +15,8 @@ import { useFirestoreConnect } from 'react-redux-firebase'
 import { UserProfile } from '../types/user'
 import { defaultUserProfile } from '../constants/user'
 import { EditSettingsSchema } from '../validation/Settings.validation'
+import CurrencyInput from '../components/CurrencyInput/CurrencyInput'
+
 export const FormikForm = styled.form`
   width: 100%;
 `
@@ -102,22 +104,27 @@ const EditSettingsPage: React.FC = () => {
             }
             errorMessage={formik.errors.startingBalance?.toString()}
           />
-          <Input
+          <CurrencyInput
+            label="Monthly Budget"
             name="monthlyBudget"
             placeholder={
               !profileIsLoading ? userProfile?.monthlyBudget : 'Loading...'
             }
-            type="number"
-            handleChange={formik.handleChange}
-            handleBlur={formik.handleBlur}
+            defaultValue={
+              !profileIsLoading ? userProfile?.monthlyBudget : 'Loading...'
+            }
+            allowDecimals={true}
+            decimalsLimit={2}
+            onChange={(value) => formik.setFieldValue('monthlyBudget', value)}
+            onBlur={formik.handleBlur}
+            prefix="€ "
             value={formik.values.monthlyBudget}
-            label="Monthly Budget"
             hasErrors={
               formik.touched.monthlyBudget && formik.errors.monthlyBudget
                 ? true
                 : false
             }
-            errorMessage={formik.errors.monthlyBudget?.toString()}
+            errorMessage={formik.errors.startingBalance?.toString()}
           />
           {error && (
             <CustomLabel type="error">

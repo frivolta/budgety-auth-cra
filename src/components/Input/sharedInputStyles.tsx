@@ -1,6 +1,5 @@
 import React from 'react'
 import styled from 'styled-components'
-import { CurrencyInputProps } from '../CurrencyInput/CurrencyInputProps'
 
 export interface InputProps {
   placeholder: string
@@ -26,25 +25,6 @@ export const InputContainer = styled.div`
 `
 
 export const InputField = styled.input<InputProps>`
-  padding: 14px;
-  border-radius: ${(props) => props.theme.misc.borderRadius};
-  box-shadow: none;
-  border: 1px solid
-    ${(props) => (props.hasErrors ? 'red' : props.theme.colors.darkSecondary)};
-  color: ${(props) => props.theme.colors.darkPrimary};
-  outline: none;
-  font-weight: 300;
-
-  ::placeholder {
-    color: ${(props) => props.theme.colors.darkSecondary};
-  }
-
-  :focus {
-    border: 1px solid ${(props) => props.theme.colors.primaryColor};
-    transition: all 0.5s;
-  }
-`
-export const CurrencyInputField = styled.input<CurrencyInputProps>`
   padding: 14px;
   border-radius: ${(props) => props.theme.misc.borderRadius};
   box-shadow: none;
