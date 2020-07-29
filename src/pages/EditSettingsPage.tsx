@@ -16,6 +16,7 @@ import { UserProfile } from '../types/user'
 import { defaultUserProfile } from '../constants/user'
 import { EditSettingsSchema } from '../validation/Settings.validation'
 import CurrencyInput from '../components/CurrencyInput/CurrencyInput'
+import TestInput from '../components/TestComponent/TestInput'
 
 export const FormikForm = styled.form`
   width: 100%;
@@ -43,6 +44,7 @@ const EditSettingsPage: React.FC = () => {
   )
 
   const formik = useFormik({
+    enableReinitialize: true,
     initialValues: {
       balanceName: userProfile?.balanceName || defaultUserProfile.balanceName,
       startingBalance:
@@ -105,6 +107,28 @@ const EditSettingsPage: React.FC = () => {
             errorMessage={formik.errors.startingBalance?.toString()}
           />
           <CurrencyInput
+            label="Starting balance"
+            name="startingBalance"
+            placeholder={
+              !profileIsLoading ? userProfile?.startingBalance : 'Loading...'
+            }
+            defaultValue={
+              !profileIsLoading ? userProfile?.startingBalance : 'Loading...'
+            }
+            allowDecimals={true}
+            decimalsLimit={2}
+            onChange={(value) => formik.setFieldValue('startingBalance', value)}
+            onBlur={formik.handleBlur}
+            prefix="€ "
+            value={formik.values.startingBalance}
+            hasErrors={
+              formik.touched.startingBalance && formik.errors.startingBalance
+                ? true
+                : false
+            }
+            errorMessage={formik.errors.startingBalance?.toString()}
+          />
+          <CurrencyInput
             label="Monthly Budget"
             name="monthlyBudget"
             placeholder={
@@ -124,7 +148,7 @@ const EditSettingsPage: React.FC = () => {
                 ? true
                 : false
             }
-            errorMessage={formik.errors.startingBalance?.toString()}
+            errorMessage={formik.errors.monthlyBudget?.toString()}
           />
           {error && (
             <CustomLabel type="error">
@@ -141,6 +165,7 @@ const EditSettingsPage: React.FC = () => {
           <CustomLabel>
             Cancel and go back to <Link to="/settings">Settings Page.</Link>
           </CustomLabel>
+          <TestInput />
         </FormikForm>
       </Card>
     </GridLayout>

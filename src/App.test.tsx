@@ -12,6 +12,7 @@ import IndexPage from './pages/IndexPage'
 import ErrorPage from './pages/ErrorPage'
 import PrivateRoute from './components/PrivateRoute/PrivateRoute'
 import { AuthContext } from './context/auth/useAuth'
+import { act } from 'react-dom/test-utils'
 
 const DummyComponent: React.FC = () => {
   return <p data-testid="DummyComponent">Dummy</p>
@@ -24,14 +25,14 @@ describe('App', () => {
 })
 
 describe('Routes', () => {
-  it('renders the default path without errors', () => {
+  it('shows state loading', () => {
     const history = createMemoryHistory()
     const { container } = render(
       <Router history={history}>
         <App />
       </Router>
     )
-    expect(container.innerHTML).toMatch('Index page')
+    expect(container.innerHTML).toMatch('Loading')
   })
 
   it('shows a 404 page when landing on a bad page', () => {
@@ -67,7 +68,12 @@ describe('Routes', () => {
       <Router history={history}>
         <Switch>
           <Route exact path="/" component={IndexPage} />
-          <PrivateRoute exact path="/dummyRoute" component={DummyComponent} />
+          <PrivateRoute
+            exact
+            path="/dummyRoute"
+            component={DummyComponent}
+            authenticated={false}
+          />
           <Route component={ErrorPage} />
         </Switch>
       </Router>
@@ -83,7 +89,12 @@ describe('Routes', () => {
         <Router history={history}>
           <Switch>
             <Route exact path="/" component={IndexPage} />
-            <PrivateRoute exact path="/dummyRoute" component={DummyComponent} />
+            <PrivateRoute
+              exact
+              path="/dummyRoute"
+              component={DummyComponent}
+              authenticated={true}
+            />
             <Route component={ErrorPage} />
           </Switch>
         </Router>

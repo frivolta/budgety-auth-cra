@@ -49,6 +49,7 @@ export const ButtonIcon = styled.img`
 export const CustomButton: React.FC<ButtonProps> = (props) => {
   return (
     <Button
+      type="submit"
       onClick={props.handleClick}
       disabled={props.disabled || props.isLoading}
       data-testid="CustomButton"

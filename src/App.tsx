@@ -87,39 +87,37 @@ const App: React.SFC = () => {
     return <div>Loading</div>
   }
   return (
-    <ApolloProvider client={client}>
-      <Provider store={store}>
-        <ReactReduxFirebaseProvider {...rrfProps}>
-          <ToastContainer />
-          <Router>
-            <Switch>
-              <Route exact path="/" component={IndexPage} />
-              <Route exact path="/signup" component={SignupPage} />
-              <Route exact path="/signin" component={SigninPage} />
-              <PrivateRoute
-                exact
-                path="/dashboard"
-                component={DashboardPage}
-                authenticated={authentication.authenticated}
-              />
-              <PrivateRoute
-                exact
-                path="/settings"
-                component={SettingsPage}
-                authenticated={authentication.authenticated}
-              />
-              <PrivateRoute
-                exact
-                path="/settings/edit"
-                component={EditSettingsPage}
-                authenticated={authentication.authenticated}
-              />
-              <Route component={ErrorPage} />
-            </Switch>
-          </Router>
-        </ReactReduxFirebaseProvider>
-      </Provider>
-    </ApolloProvider>
+    <Provider store={store}>
+      <ReactReduxFirebaseProvider {...rrfProps}>
+        <ToastContainer />
+        <Router>
+          <Switch>
+            <Route exact path="/" component={IndexPage} />
+            <Route exact path="/signup" component={SignupPage} />
+            <Route exact path="/signin" component={SigninPage} />
+            <PrivateRoute
+              exact
+              path="/dashboard"
+              component={DashboardPage}
+              authenticated={authentication.authenticated}
+            />
+            <PrivateRoute
+              exact
+              path="/settings"
+              component={SettingsPage}
+              authenticated={authentication.authenticated}
+            />
+            <PrivateRoute
+              exact
+              path="/settings/edit"
+              component={EditSettingsPage}
+              authenticated={authentication.authenticated}
+            />
+            <Route component={ErrorPage} />
+          </Switch>
+        </Router>
+      </ReactReduxFirebaseProvider>
+    </Provider>
   )
 }
 export default App

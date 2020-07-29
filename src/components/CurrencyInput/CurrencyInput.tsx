@@ -8,7 +8,7 @@ import {
 } from '../Input/sharedInputStyles'
 
 const CurrencyInput: React.FC<CurrencyInputExtendedProps> = ({
-  placeholder = '0',
+  placeholder = '€ 0.00',
   value,
   onChange,
   onBlur,
@@ -31,6 +31,7 @@ const CurrencyInput: React.FC<CurrencyInputExtendedProps> = ({
         onBlur={onBlur}
         prefix="€ "
         value={value}
+        hasErrors={hasErrors}
       />
       {hasErrors && (
         <InputError data-testid="InputError">{errorMessage}</InputError>
